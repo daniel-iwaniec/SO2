@@ -4,7 +4,7 @@
 #include <sys/unistd.h>
 
 int main() {
-    int n = 12;
+    int n = 10;
     int m = 5;
     int i = 0;
 
