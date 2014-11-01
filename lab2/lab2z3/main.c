@@ -10,7 +10,9 @@ int main(int argc, char** argv) {
     
     pid_t ch_pid, ppid, pid;
     
-    ch_pid = fork();
+    for (i = 0; i < n; i++) {
+        ch_pid = fork();
+    }
     
     while (1) {
         sleep(1);
