@@ -2,53 +2,49 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <unistd.h>
+#include <sys/unistd.h>
 
 int main() {
+    int status;
+    int n = 2;
+    int m = 50;
+    int i = 0;
 
-	int status;
-	int n = 2;
-	int m = 50;
+    pid_t ch_pid, ppid, pid;
+    ch_pid = fork();
 
-	int i = 0;
+    while (1) {
+        sleep(1);
 
-	pid_t ch_pid, ppid, pid;
-	ch_pid = fork();
-	
-	while (1) {
-		sleep(1);
+        if (ch_pid != 0 && i < n) {
+            ppid = getppid();
+            pid = getpid();
+            printf("PARENT\t%d\t%d\t%d\n", ch_pid, pid, ppid);
+        } else if (ch_pid == 0 && i < m) {
+            ppid = getppid();
+            pid = getpid();
+            printf("CHILD\t%d\t%d\t%d\n", ch_pid, pid, ppid);
+        }
 
-		if (ch_pid != 0 && i < n) {
-			ppid = getppid();
-       		pid = getpid();
-			printf("PARENT\t%d\t%d\t%d\n", ch_pid, pid, ppid);
-		} else if (ch_pid == 0 && i < m) {
-			ppid = getppid();
-       		pid = getpid();
-			printf("CHILD\t%d\t%d\t%d\n", ch_pid, pid, ppid);
-		}
+        i++;
 
-		i++;
-	
-		if (i >= n && ch_pid != 0) {
-			ch_pid = wait(&status);
-			//if (WIFEXITED(status) != 0) {
-				printf("CHILD\t%d\t%d\n", ch_pid, WEXITSTATUS(status));
-				exit(0);
-			//}
-		}
+        if (i >= n && ch_pid != 0) {
+            ch_pid = wait(&status);
+            printf("CHILD\t%d\t%d\t%d\n", ch_pid, WIFEXITED(status), WEXITSTATUS(status));
+            exit(EXIT_SUCCESS);
+        }
 
-		if (n > m) {
-			if (i >= n) {
-				break;
-			}
-		} else {
-			if (i >= m) {
-				break;
-			}
-		}
+        if (n > m) {
+            if (i >= n) {
+                break;
+            }
+        } else {
+            if (i >= m) {
+                break;
+            }
+        }
     }
 
-	return 0;
+    return EXIT_SUCCESS;
 }
 

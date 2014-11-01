@@ -1,12 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
-#include <unistd.h>
+#include <sys/unistd.h>
 
 int main() {
     int n = 6;
     int m = 10;
-
     int i = 0;
 
     pid_t ch_pid, ppid, pid;
@@ -28,7 +27,7 @@ int main() {
         i++;
 
         if (i >= n && ch_pid != 0) {
-            exit(0);
+            exit(EXIT_SUCCESS);
         }
 
         if (n > m) {
@@ -42,5 +41,5 @@ int main() {
         }
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }
