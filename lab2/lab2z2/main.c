@@ -30,7 +30,7 @@ int main() {
 
         if (i >= n && ch_pid != 0) {
             ch_pid = wait(&status);
-            printf("CHILD\t%d\t%d\t%d\n", ch_pid, WIFEXITED(status), WEXITSTATUS(status));
+            printf("CHILD \t%d \t%d \t%d \t%d \t%d \t%d \t%d \n", ch_pid, WIFEXITED(status), WEXITSTATUS(status), WIFSIGNALED(status), WTERMSIG(status), WIFSTOPPED(status), WSTOPSIG(status), WCOREDUMP(status));
             exit(EXIT_SUCCESS);
         }
 
@@ -47,4 +47,3 @@ int main() {
 
     return EXIT_SUCCESS;
 }
-
