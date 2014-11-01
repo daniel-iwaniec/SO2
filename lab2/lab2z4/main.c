@@ -23,6 +23,7 @@ int main(int argc, char** argv) {
         exit(EXIT_FAILURE);
     }
     
+    /* Zmienić sposób forkowania, tak żeby child tworzył childa */
     for (i = 0; i < n; i++) {
         if (ch_pid != 0) {
             piReq = atoi(argv[i + 2]);
@@ -33,6 +34,7 @@ int main(int argc, char** argv) {
         }
     }
 
+    /* Każdy child musi czekać na swojego childa */
     if (ch_pid != 0) {
         while (m < n) {
             ch_pid = wait(&status);
@@ -40,11 +42,11 @@ int main(int argc, char** argv) {
             printf("RAPORT Z PROCESU: %d\n", pid);
             printf("POTOMEK O IDENTYFIKATORZE %d ZAKONCZYL DZIALANIE\n", ch_pid);
             printf("STATUS ZAKONCZENIA PROCESU: %d\n", status);
-            
+
             if (WIFEXITED(status) == 0) {
                 printf("PROCES ZAKONCZYL SIE NIEPOPRAWNIE");
             }
-            
+
             m++;
         }
         exit(EXIT_SUCCESS);
