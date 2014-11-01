@@ -23,6 +23,8 @@ int main(int argc, char** argv) {
         exit(EXIT_FAILURE);
     }
     
+    printf("ID PARENTA: %d\n", getpid());
+    
     for (i = 0; i < n; i++) {
         if ((ch_pid != 0 && i == 0) || (childID == i-1)) {
             piReq = atoi(argv[i + 2]);
