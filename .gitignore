@@ -3,3 +3,8 @@ lab2/lab2z1/build/Debug/
 lab2/lab2z1/.dep.inc
 lab2/lab2z1/Makefile
 nbproject/
+*.inc
+lab2/lab2z3/Makefile
+lab2/lab2z2/Makefile
+lab2/lab2z2/build/
+lab2/lab2z3/build/
