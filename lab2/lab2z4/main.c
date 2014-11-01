@@ -25,10 +25,9 @@ int main(int argc, char** argv) {
     
     /* Zmienić sposób forkowania, tak żeby child tworzył childa */
     for (i = 0; i < n; i++) {
-        if (ch_pid != 0) {
+        if ((ch_pid != 0 && i == 0) || (childID == i-1)) {
             piReq = atoi(argv[i + 2]);
             ch_pid = fork();
-        } else {
             childID = i;
             break;
         }
