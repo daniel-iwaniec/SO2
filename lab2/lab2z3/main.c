@@ -9,10 +9,13 @@ int main(int argc, char** argv) {
     int chID;
     int i = 0;
     
-    pid_t ch_pid, ppid, pid;
+    pid_t ch_pid = 1;
+    pid_t ppid, pid;
     
     for (i = 0; i < n; i++) {
-        ch_pid = fork();
+        if (ch_pid != 0) {
+            ch_pid = fork();
+        }
         chID = i;
     }
     
