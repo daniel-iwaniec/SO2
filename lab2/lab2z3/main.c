@@ -7,7 +7,7 @@
 int main(int argc, char** argv) {
     int n = atoi(argv[1]);
     int chID;
-    int i = 0;
+    volatile int i = 0;
     
     pid_t ch_pid = 1;
     pid_t ppid, pid;
