@@ -4,20 +4,20 @@
 #include <sys/wait.h>
 #include <sys/unistd.h>
 
-void recursiveFork(int n, int i, char** argv, int piReq, int childID, pid_t* ch_pid) {
+void recursiveFork(int n, int i) {
+    pid_t ch_pid = 0;
+    int childID = 0;
+    
     if (n > 0) {
-        piReq = atoi(argv[i + 2]);
         ch_pid = fork();
-        if (ch_pid == 0) {
-            childID = i;
-        }
+        childID = i;
     } else {
         return;
     }
 
     i++;
     n--;
-    recursiveFork(n, i, argv, &piReq, &childID, &ch_pid);
+    recursiveFork(n, i);
 }
 
 int main(int argc, char** argv) {
@@ -42,7 +42,7 @@ int main(int argc, char** argv) {
 
     printf("ID PARENTA: %d\n", getpid());
 
-    recursiveFork(n, 0, argv, &piReq, &childID, &ch_pid);
+    recursiveFork(n, 0);
 
     /* Każdy child musi czekać na swojego childa */
     /*if (ch_pid != 0) {
