@@ -4,10 +4,27 @@
 #include <sys/wait.h>
 #include <sys/unistd.h>
 
+void recursiveFork(int n, int i, char** argv, int piReq, int childID, pid_t* ch_pid) {
+    if (n > 0) {
+        piReq = atoi(argv[i + 2]);
+        ch_pid = fork();
+        if (ch_pid == 0) {
+            childID = i;
+        }
+    } else {
+        return;
+    }
+
+    i++;
+    n--;
+    recursiveFork(n, i, argv, &piReq, &childID, &ch_pid);
+}
+
 int main(int argc, char** argv) {
     int n = atoi(argv[1]);
     int m = 0;
     volatile int i = 0;
+    int rootPID = 0;
 
     int childID = 0;
     int piNow = 0;
@@ -15,25 +32,17 @@ int main(int argc, char** argv) {
 
     int status = 0;
 
-    pid_t ch_pid = 1;
+    pid_t ch_pid = 0;
     pid_t ppid, pid;
 
-    if (argc != n+2) {
+    if (argc != n + 2) {
         printf("KAZDY PROCES POTOMNY MUSI ZNAC SWOJA ILOSC ITERACJI");
         exit(EXIT_FAILURE);
     }
-    
+
     printf("ID PARENTA: %d\n", getpid());
-    
-    for (i = 0; i < n; i++) {
-        if ((ch_pid != 0 && i == 0) || (childID == i-1)) {
-            piReq = atoi(argv[i + 2]);
-            ch_pid = fork();
-        } else {
-            childID = i;
-            break;
-        }
-    }
+
+    recursiveFork(n, 0, argv, &piReq, &childID, &ch_pid);
 
     /* Każdy child musi czekać na swojego childa */
     /*if (ch_pid != 0) {
