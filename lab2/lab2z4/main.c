@@ -23,18 +23,18 @@ int main(int argc, char** argv) {
         exit(EXIT_FAILURE);
     }
     
-    /* Zmienić sposób forkowania, tak żeby child tworzył childa */
     for (i = 0; i < n; i++) {
         if ((ch_pid != 0 && i == 0) || (childID == i-1)) {
             piReq = atoi(argv[i + 2]);
             ch_pid = fork();
+        } else {
             childID = i;
             break;
         }
     }
 
     /* Każdy child musi czekać na swojego childa */
-    if (ch_pid != 0) {
+    /*if (ch_pid != 0) {
         while (m < n) {
             ch_pid = wait(&status);
             pid = getpid();
@@ -49,7 +49,7 @@ int main(int argc, char** argv) {
             m++;
         }
         exit(EXIT_SUCCESS);
-    }
+    }*/
 
     while (1) {
         sleep(1);
