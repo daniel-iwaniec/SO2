@@ -15,8 +15,10 @@ int main(int argc, char** argv) {
     for (i = 0; i < n; i++) {
         if (ch_pid != 0) {
             ch_pid = fork();
+        } else {
+            chID = i;
+            break;
         }
-        chID = i;
     }
     
     while (1) {
