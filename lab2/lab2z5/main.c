@@ -23,18 +23,15 @@ int main() {
             printf("NIE PODANO KOMENDY\n");
             exit(EXIT_FAILURE);
         }
-printf("COdsadsa");
         size = strlen(command) - 1;
         if (command[size] == '\n') {
             command[size] = '\0';
         }
-printf("%s", command);
+        
         pch = strtok(command, " ");
         strcpy(program, pch);
         arguments[i] = program;
         i++;
-
-        printf("%s", arguments[0]);
         
         while (pch != NULL) {
             pch = strtok(NULL, " ");
