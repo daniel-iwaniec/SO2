@@ -10,10 +10,7 @@ int main() {
     size_t size;
     int status;
     char *command = NULL;
-    char program[1000];
     char path[1000];
-    char * pch;
-    char * arguments[100];
     char * p = NULL;
     char ** res = NULL;
 
@@ -21,33 +18,24 @@ int main() {
 
     while (1) {
         printf("COMMAND: ");
+        getline(&command, &size, stdin);
 
-        if (getline(&command, &size, stdin) == -1) {
-            printf("NIE PODANO KOMENDY\n");
-            exit(EXIT_FAILURE);
-        }
         size = strlen(command) - 1;
         if (command[size] == '\n') {
             command[size] = '\0';
         }
-        
-        char * p = strtok(command, " ");
+
+        n_spaces = 0;
+        p = strtok(command, " ");
         while (p) {
             res = realloc(res, sizeof (char*) * ++n_spaces);
-            if (res == NULL)
-                exit(-1);
             res[n_spaces - 1] = p;
             p = strtok(NULL, " ");
         }
-
         res = realloc(res, sizeof (char*) * (n_spaces + 1));
         res[n_spaces] = 0;
 
-        for (i = 0; i < (n_spaces + 1); ++i)
-            printf("res[%d] = %s\n", i, res[i]);
-
         childPid = fork();
-
         if (childPid != 0) {
             childPid = wait(&status);
 
