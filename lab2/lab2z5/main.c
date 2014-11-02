@@ -10,11 +10,11 @@ int main() {
     size_t size;
     int status;
     char *command = NULL;
-    char path[1000];
     char * p = NULL;
     char ** res = NULL;
+    char path[1000];
 
-    int n_spaces = 0, i;
+    int n_spaces = 0;
 
     while (1) {
         printf("COMMAND: ");
@@ -56,12 +56,9 @@ int main() {
 
             if (access(path, F_OK) == 0) {
                 execv(path, res);
-                exit(EXIT_SUCCESS);
             } else {
                 exit(EXIT_FAILURE);
             }
         }
     }
-
-    return EXIT_SUCCESS;
 }
