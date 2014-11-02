@@ -4,38 +4,15 @@
 #include <sys/wait.h>
 #include <sys/unistd.h>
 
-void recursiveFork(int n, int i, int ch_pid) {
-    int childID = 0;
-
-    if (n > 0) {
-        if (ch_pid != 0) {
-            ch_pid = fork();
-            childID = i;
-        } else {
-            return;
-        }
-    } else {
-        return;
-    }
-
-    i++;
-    n--;
-    recursiveFork(n, i, ch_pid);
-}
-
-int main(int argc, char** argv) {
+void recursiveFork(int argc, char** argv, int childID, int childN, int rootPID) {
     int n = atoi(argv[1]);
-    int m = 0;
-    volatile int i = 0;
-    int rootPID = 0;
 
-    int childID = 0;
     int piNow = 0;
     int piReq = 0;
 
     int status = 0;
 
-    pid_t ch_pid = 0;
+    pid_t ch_pid = 1;
     pid_t ppid, pid;
 
     if (argc != n + 2) {
@@ -43,43 +20,44 @@ int main(int argc, char** argv) {
         exit(EXIT_FAILURE);
     }
 
-    printf("ID PARENTA: %d\n", getpid());
+    piReq = atoi(argv[childID + 2]);
+    ch_pid = fork();
 
-    recursiveFork(n, 0, 1);
+    if (ch_pid == 0 && childID < childN - 1) {
+        recursiveFork(argc, argv, childID + 1, childN, rootPID);
+    }
 
-    /* Każdy child musi czekać na swojego childa */
-    /*if (ch_pid != 0) {
-        while (m < n) {
-            ch_pid = wait(&status);
-            pid = getpid();
-            printf("RAPORT Z PROCESU: %d\n", pid);
-            printf("POTOMEK O IDENTYFIKATORZE %d ZAKONCZYL DZIALANIE\n", ch_pid);
-            printf("STATUS ZAKONCZENIA PROCESU: %d\n", status);
+    if (ch_pid != 0) {
+        ch_pid = wait(&status);
+        pid = getpid();
+        printf("RAPORT Z PROCESU: %d\n", pid);
+        printf("POTOMEK O IDENTYFIKATORZE %d ZAKONCZYL DZIALANIE\n", ch_pid);
+        printf("STATUS ZAKONCZENIA PROCESU: %d\n", status);
 
-            if (WIFEXITED(status) == 0) {
-                printf("PROCES ZAKONCZYL SIE NIEPOPRAWNIE");
-            }
-
-            m++;
+        if (WIFEXITED(status) == 0) {
+            printf("PROCES ZAKONCZYL SIE NIEPOPRAWNIE");
         }
-        exit(EXIT_SUCCESS);
-    }*/
 
-    while (1) {
-        sleep(1);
+        if (rootPID == getpid()) {
+            exit(EXIT_SUCCESS);
+        }
+    } else {
+        while (1) {
+            sleep(1);
 
-        if (ch_pid == 0) {
             ppid = getppid();
             pid = getpid();
             printf("C[%d, %d, %d]\tPPID: %d\tPID: %d\n", childID, piReq, piNow, ppid, pid);
-        }
 
-        if (piNow >= piReq && ch_pid == 0) {
-            exit(EXIT_SUCCESS);
-        }
+            if (piNow >= piReq) {
+                exit(EXIT_SUCCESS);
+            }
 
-        piNow++;
+            piNow++;
+        }
     }
+}
 
-    return EXIT_SUCCESS;
+int main(int argc, char** argv) {
+    recursiveFork(argc, argv, 0, atoi(argv[1]), getpid());
 }
