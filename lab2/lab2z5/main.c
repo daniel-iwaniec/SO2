@@ -14,7 +14,10 @@ int main() {
     char path[1000];
     char * pch;
     char * arguments[100];
-    int i = 0;
+    char * p = NULL;
+    char ** res = NULL;
+
+    int n_spaces = 0, i;
 
     while (1) {
         printf("COMMAND: ");
@@ -27,25 +30,28 @@ int main() {
         if (command[size] == '\n') {
             command[size] = '\0';
         }
-        
-        pch = strtok(command, " ");
-        strcpy(program, pch);
-        arguments[i] = program;
-        i++;
-        
-        while (pch != NULL) {
-            pch = strtok(NULL, " ");
-            arguments[i] = pch;
-            i++;
+        memset(res, 0, sizeof res);
+        char * p = strtok(command, " ");
+        while (p) {
+            res = realloc(res, sizeof (char*) * ++n_spaces);
+            if (res == NULL)
+                exit(-1);
+            res[n_spaces - 1] = p;
+            p = strtok(NULL, " ");
         }
-        arguments[i] = NULL;
+
+        res = realloc(res, sizeof (char*) * (n_spaces + 1));
+        res[n_spaces] = 0;
+
+        for (i = 0; i < (n_spaces + 1); ++i)
+            printf("res[%d] = %s\n", i, res[i]);
 
         childPid = fork();
 
         if (childPid != 0) {
             childPid = wait(&status);
 
-            if (strcmp(command, "exit") == 0) {
+            if (strcmp(res[0], "exit") == 0) {
                 exit(EXIT_SUCCESS);
             }
 
@@ -58,11 +64,10 @@ int main() {
             } else {
                 strcpy(path, "/bin/");
             }
-            strcat(path, program);
+            strcat(path, res[0]);
 
             if (access(path, F_OK) == 0) {
-                //execl(path, program, NULL);
-                execv(path, arguments);
+                execv(path, res);
                 exit(EXIT_SUCCESS);
             } else {
                 exit(EXIT_FAILURE);
