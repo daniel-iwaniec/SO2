@@ -30,7 +30,7 @@ int main() {
         if (command[size] == '\n') {
             command[size] = '\0';
         }
-        memset(res, 0, sizeof res);
+        
         char * p = strtok(command, " ");
         while (p) {
             res = realloc(res, sizeof (char*) * ++n_spaces);
