@@ -7,13 +7,37 @@
 
 int main() {
     pid_t childPid;
+    size_t size;
     int status;
-    char command[100];
+    char *command = NULL;
+    char program[1000];
     char path[1000];
+    char * pch;
+    char * arguments[100];
+    int i = 0;
 
     while (1) {
         printf("COMMAND: ");
-        scanf("%s", command);
+
+        if (getline(&command, &size, stdin) == -1) {
+            printf("NIE PODANO KOMENDY\n");
+            exit(EXIT_FAILURE);
+        }
+
+        size = strlen(command) - 1;
+        if (command[size] == '\n') {
+            command[size] = '\0';
+        }
+
+        pch = strtok(command, " ");
+        strcpy(program, pch);
+
+        while (pch != NULL) {
+            pch = strtok(NULL, " ,.-");
+            arguments[i] = pch;
+            i++;
+        }
+        arguments[i] = NULL;
 
         childPid = fork();
 
@@ -33,10 +57,11 @@ int main() {
             } else {
                 strcpy(path, "/bin/");
             }
-            strcat(path, command);
+            strcat(path, program);
 
             if (access(path, F_OK) == 0) {
-                execl(path, command, NULL);
+                //execl(path, program, NULL);
+                execv(path, arguments);
                 exit(EXIT_SUCCESS);
             } else {
                 exit(EXIT_FAILURE);
