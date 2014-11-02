@@ -7,28 +7,40 @@
 
 int main() {
     pid_t childPid;
-    int status, firstRun = 1;
+    int status;
     char command[100];
+    char path[1000];
 
     while (1) {
-        if (!firstRun) {
-            printf("\n");
-        } else {
-            firstRun = 0;
-        }
         printf("COMMAND: ");
-
         scanf("%s", command);
 
         childPid = fork();
 
         if (childPid != 0) {
             childPid = wait(&status);
+
             if (strcmp(command, "exit") == 0) {
                 exit(EXIT_SUCCESS);
             }
+
+            if (WEXITSTATUS(status) != 0) {
+                printf("KOMENDA NIEOBSLUGIWANA\n");
+            }
         } else {
-            execl(strcat("/bin/", command), command, NULL);
+            if (access("C:/cygwin64/bin/", F_OK) == 0) {
+                strcpy(path, "/cygwin64/bin/");
+            } else {
+                strcpy(path, "/bin/");
+            }
+            strcat(path, command);
+
+            if (access(path, F_OK) == 0) {
+                execl(path, command, NULL);
+                exit(EXIT_SUCCESS);
+            } else {
+                exit(EXIT_FAILURE);
+            }
         }
     }
 
