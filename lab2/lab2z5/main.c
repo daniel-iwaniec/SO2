@@ -28,7 +28,7 @@ int main() {
                 printf("KOMENDA NIEOBSLUGIWANA\n");
             }
         } else {
-            if (access("C:/cygwin64/bin/", F_OK) == 0) {
+            if (access("/cygwin64/bin/", F_OK) == 0) {
                 strcpy(path, "/cygwin64/bin/");
             } else {
                 strcpy(path, "/bin/");
