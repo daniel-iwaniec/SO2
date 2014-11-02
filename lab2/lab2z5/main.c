@@ -28,9 +28,7 @@ int main() {
                 exit(EXIT_SUCCESS);
             }
         } else {
-            execl("/bin/ls", "ls", NULL);
-            printf("%s", command);
-            exit(EXIT_SUCCESS);
+            execl(strcat("/bin/", command), command, NULL);
         }
     }
 
